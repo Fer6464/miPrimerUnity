@@ -5,19 +5,23 @@ using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 public class DyingAnimationManager : MonoBehaviour
 {
-
+    [Header("Dying Animation Sprites")]
     public Sprite hitSprite;
     public Sprite[] dyingSprites;
-    public AudioClip soundFX;
-    public float fallSpeed = 0;
-    private AudioSource mySoundFX;
+
+    [Header("Time Between Frames")]
     public float waitAnimation = 0.05f;
+    [Header("Fall Speed")]
+    public float fallSpeed = 0;
+
+    [Header("Dying SFX's")]
+    public AudioClip[] soundFX;
+    private AudioSource mySoundFX;
     private int index = 0;
     private Coroutine coroutine;
     private SpriteRenderer mySpriteRenderer;
     private Rigidbody2D rb;
     private bool isFalling = false;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         mySpriteRenderer = GetComponent<SpriteRenderer>();
@@ -25,7 +29,6 @@ public class DyingAnimationManager : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (isFalling)
@@ -55,8 +58,11 @@ public class DyingAnimationManager : MonoBehaviour
     {
         if (col.gameObject.CompareTag("Bullet"))
         {
-            mySoundFX.PlayOneShot(soundFX, 1f);
+            int randomIndex = Random.Range(0, soundFX.Length);
+            AudioClip actualSoundFX = soundFX[randomIndex];
+            mySoundFX.PlayOneShot(actualSoundFX, 1f);
             StartCoroutine(DieRoutine());
+            Destroy(GetComponent<PolygonCollider2D>());   
         }
     }
 }
